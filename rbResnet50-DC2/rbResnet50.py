@@ -16,7 +16,7 @@ class RBResNet50(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.resnet = resnet50(pretrained=False)
+        self.resnet = resnet50(weights=None)
 
         # Change the number of input channels to 3
         self.resnet.conv1 = nn.Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
