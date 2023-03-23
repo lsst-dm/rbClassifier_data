@@ -23,17 +23,18 @@ import unittest
 import torch
 import numpy as np
 
-from lsst.meas.transiNet import RBTransiNetInterface, CutoutInputs, NNModelPackage
+from lsst.meas.transiNet import RBTransiNetInterface, CutoutInputs
+from lsst.meas.transiNet.modelPackages import NNModelPackage
 
 
-class TestModelPackageNeighbor(unittest.TestCase):
+class TestWithModelPackage(unittest.TestCase):
     def setUp(self):
-        self.model_package_name = 'neighbor:///rbResnet50-DC2'
+        self.model_package_name = 'rbResnet50-DC2'
 
     def test_load(self):
-        """Test loading of a 'neighbor' model package
+        """Test that this model package can be loaded
         """
-        model_package = NNModelPackage(self.model_package_name)
+        model_package = NNModelPackage(self.model_package_name, 'neighbor')
         model = model_package.load(device='cpu')
 
         weights = next(model.parameters())
@@ -48,10 +49,13 @@ class TestModelPackageNeighbor(unittest.TestCase):
                                    rtol=1e-8, atol=1e-8)
 
 
-class TestOneCutout(unittest.TestCase):
+class TestWithTransiNetInterface(unittest.TestCase):
+    """Test the RBTransiNetInterface using this model package.
+    """
+
     def setUp(self):
-        model_package_name = 'neighbor:///rbResnet50-DC2'
-        self.interface = RBTransiNetInterface(model_package_name)
+        model_package_name = 'rbResnet50-DC2'
+        self.interface = RBTransiNetInterface(model_package_name, 'neighbor')
 
     def test_infer_empty(self):
         """Test running infer on images containing all zeros.
